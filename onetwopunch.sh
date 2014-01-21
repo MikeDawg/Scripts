@@ -1,5 +1,9 @@
 #!/bin/bash
 #
+# Original Code for onetwopunch.sh from: Harold Rodriguez
+# Original Code found on: http://blog.techorganic.com/
+# Modified:  January 21, 2014
+# Modified by: MikeDawg
 #
 # Default usage/error message
 echoErrorMsg () {
