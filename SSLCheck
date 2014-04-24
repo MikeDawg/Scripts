@@ -18,7 +18,8 @@ if  [ ! -e $openssl ]; then
 fi
 
 ## Request available ciphers from openssl and test them
-for ssl in -ssl2 -ssl3 -tls1
+#for ssl in -ssl2 -ssl3 -tls1
+for ssl in -ssl3 -tls1 -tls1_1 -tls1_2 -dtls1
 do
   echo "Testing `echo $ssl | cut -c2- | tr "a-z" "A-Z"`..."
   $openssl ciphers $ssl -v | while read line
