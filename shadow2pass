@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# shadow2pass: generate a dummy passwd file with 
+# the encrypted passwords from a shadow file
+#
+# Script originally found at:  http://blog.techorganic.com/2011/07/20/de-ice-hacking-challenge-part-2/
+# Script author:  Harold “superkojiman” Rodriguez
+ 
+import sys
+ 
+start_uid = 500  # random UID
+start_gid = 500  # random GID
+for line in open(sys.argv[1]):
+    a = line.split(":")
+    print "%s:%s:%d:%d:,,,:/home/%s:/bin/bash" % \
+        (a[0], a[1], start_uid, start_gid, a[0])
+    start_uid += 1
