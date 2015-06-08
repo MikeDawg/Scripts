@@ -1,25 +1,28 @@
-#!/bin/bash
+#!/bin/bash 
 # Hacked together by Mike Harris
 # Vast majority of script stolen from sslthing.sh by blh@blh.se
 #
 openssl=/usr/bin/openssl
-## Make a request
-echo "GET / HTTP/1.1" > sslcheck.tmp
 ###### END OF CONFIGURATION #####
-
+# Print Usage Info
 if  [ ! $1 ]; then
   echo "Syntax: $0 HOST:SSLPORT [-v]"
   exit 1
 fi
-
+# Fix path to OpenSSL
 if  [ ! -e $openssl ]; then
   echo "Please correct path to OpenSSL $0"
   exit 2
 fi
-
+## Create temp file to do some actions in
+SSLCHECKTMP=$(mktemp /tmp/sslcheck.XXXXXXXXXXXX) || { echo "Failed to create temp file"; exit 1; }
+##
+## Make a request
+echo "GET / HTTP/1.1" > $SSLCHECKTMP
+#
 ## Request available ciphers from openssl and test them
-#for ssl in -ssl2 -ssl3 -tls1
-for ssl in -ssl3 -tls1 -tls1_1 -tls1_2 -dtls1
+for ssl in -ssl2 -ssl3 -tls1
+#for ssl in -ssl3 -tls1 -tls1_1 -tls1_2 
 do
   echo "Testing `echo $ssl | cut -c2- | tr "a-z" "A-Z"`..."
   $openssl ciphers $ssl -v | while read line
@@ -30,7 +33,7 @@ do
       echo -n "$cipher - $bits bits..."
     fi
 
-    if ($openssl s_client $ssl -cipher $cipher -connect $1 < sslcheck.tmp 2>&1 | egrep ^New | egrep -v NONE  > /dev/null); then
+    if ($openssl s_client $ssl -cipher $cipher -connect $1 < $SSLCHECKTMP 2>&1 | egrep ^New | egrep -v NONE  > /dev/null); then
       if [ $2 ]; then
         echo "OK"
       else
@@ -45,6 +48,6 @@ do
 done
 
 ## Remove temporary file
-rm -f sslcheck.tmp
+rm -f $SSLCHECKTMP
 exit 0
 
